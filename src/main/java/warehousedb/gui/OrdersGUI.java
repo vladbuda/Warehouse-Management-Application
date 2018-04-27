@@ -6,6 +6,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -16,6 +17,8 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 import warehousedb.business.Manager;
+import warehousedb.business.OrderBLL;
+import warehousedb.model.Client;
 import warehousedb.model.Order;
 
 /**Class responsible for creating the graphical user interface for the products table
@@ -34,12 +37,16 @@ public class OrdersGUI
 	private JButton insert;
 	private int clientid, productid, quantity;
 	private ArrayList<String[]> items;
+
 	
+	OrderBLL orderBLL;
 	/**Instantiates all the graphic components related to the products table
 	 * 
 	 */
 	public OrdersGUI()
 	{
+		orderBLL = new OrderBLL();
+		
 		orders = new JFrame("Orders");
 		
 		clientIdField = new JTextField("Client ID");
@@ -99,7 +106,8 @@ public class OrdersGUI
 	private void showItems()
 	{
 		model.setRowCount(0);
-		items = Manager.getData(Order.class);
+		List<Order> list = orderBLL.findAll();
+		items = Manager.getData(list);
 		for(String[] s : items)
 			model.addRow(s);
 	}
@@ -140,7 +148,7 @@ public class OrdersGUI
 						quantity = Integer.parseInt(quantityField.getText());
 						if(quantity < 0) throw new IllegalArgumentException();
 						
-						int report = Manager.insert(new Order(clientid,productid,quantity));
+						int report = orderBLL.insert(new Order(clientid,productid,quantity));
 						
 						if(report == - 1) 
 							JOptionPane.showMessageDialog(null, String.format("%s", "The client does not exist in the database" ), "Error", JOptionPane.ERROR_MESSAGE, null);

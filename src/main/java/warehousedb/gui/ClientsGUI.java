@@ -6,6 +6,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -15,6 +16,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
+import warehousedb.business.ClientBLL;
 import warehousedb.business.Manager;
 import warehousedb.model.Client;
 import warehousedb.validator.EmailValidator;
@@ -37,11 +39,13 @@ public class ClientsGUI
 	private String name, address, email;
 	private ArrayList<String[]> items;
 	
+	ClientBLL clientBLL;
 	/**Instantiates all the graphic components related to the clients table
 	 * 
 	 */
 	public ClientsGUI()
 	{
+		clientBLL = new ClientBLL();
 		clients = new JFrame("Clients");
 		
 		idField = new JTextField("ID");
@@ -115,7 +119,8 @@ public class ClientsGUI
 	private void showItems()
 	{
 		model.setRowCount(0);
-		items = Manager.getData(Client.class);
+		List<Client> list = clientBLL.findAll();
+		items = Manager.getData(list);
 		for(String[] s : items)
 			model.addRow(s);
 	}
@@ -158,7 +163,7 @@ public class ClientsGUI
 						
 						if(!EmailValidator.validate(email)) throw new IllegalArgumentException();
 						
-						if(Manager.insert(new Client(id,name,address,email)) == 0) 
+						if(clientBLL.insert(new Client(id,name,address,email)) == 0) 
 							JOptionPane.showMessageDialog(null, String.format("%s", "The client already exists in the database" ), "ERROR", JOptionPane.ERROR_MESSAGE, null);
 						else
 						{
@@ -193,7 +198,7 @@ public class ClientsGUI
 						email = emailField.getText();
 						
 						
-						if(Manager.edit(new Client(id,name,address,email)) == false) 
+						if(clientBLL.edit(new Client(id,name,address,email)) == false) 
 							JOptionPane.showMessageDialog(null, String.format("%s", "The client does not exist in the database" ), "ERROR", JOptionPane.ERROR_MESSAGE, null);
 						else
 						{
@@ -229,7 +234,7 @@ public class ClientsGUI
 						addressField.setText("Address");
 						emailField.setText("Email");
 						
-						if(Manager.delete(new Client(id,name,address,email)) == false) 
+						if(clientBLL.delete(new Client(id,name,address,email)) == false) 
 							JOptionPane.showMessageDialog(null, String.format("%s", "The client does not exist in the database" ), "ERROR", JOptionPane.ERROR_MESSAGE, null);
 						else
 						{

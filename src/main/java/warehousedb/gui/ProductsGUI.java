@@ -6,6 +6,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -16,6 +17,8 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 import warehousedb.business.Manager;
+import warehousedb.business.ProductBLL;
+import warehousedb.model.Order;
 import warehousedb.model.Product;
 
 /**Class responsible for creating the graphical user interface for the products table
@@ -35,12 +38,13 @@ public class ProductsGUI
 	private int id, price, stock;
 	private String name;
 	private static ArrayList<String[]> items;
-	
+	ProductBLL productBLL;
 	/**Instantiates all the graphic components related to the products table
 	 * 
 	 */
 	public ProductsGUI()
 	{
+		productBLL = new ProductBLL();
 		products = new JFrame("Products");
 		
 		idField = new JTextField("ID");
@@ -111,10 +115,11 @@ public class ProductsGUI
 	/**
 	 * This method displays all the entries in an SQL table in its corresponding JTable
 	 */
-	public static void showItems()
+	public void showItems()
 	{
 		model.setRowCount(0);
-		items = Manager.getData(Product.class);
+		List<Product> list = productBLL.findAll();
+		items = Manager.getData(list);
 		for(String[] s : items)
 			model.addRow(s);
 	}
@@ -155,7 +160,7 @@ public class ProductsGUI
 						stock = Integer.parseInt(stockField.getText());
 						
 						
-						if(Manager.insert(new Product(id,name,price,stock)) == 0) 
+						if(productBLL.insert(new Product(id,name,price,stock)) == 0) 
 							JOptionPane.showMessageDialog(null, String.format("%s", "The product already exists in the database" ), "ERROR", JOptionPane.ERROR_MESSAGE, null);
 						else
 						{
@@ -186,7 +191,7 @@ public class ProductsGUI
 						price = Integer.parseInt(priceField.getText());
 						stock = Integer.parseInt(stockField.getText());
 						
-						if(Manager.edit(new Product(id,name,price,stock)) == false) 
+						if(productBLL.edit(new Product(id,name,price,stock)) == false) 
 							JOptionPane.showMessageDialog(null, String.format("%s", "The product does not exist in the database" ), "ERROR", JOptionPane.ERROR_MESSAGE, null);
 						else
 						{
@@ -214,7 +219,7 @@ public class ProductsGUI
 					{
 						id = Integer.parseInt(idField.getText());
 						
-						if(Manager.delete(new Product(id,null,0,0)) == false) 
+						if(productBLL.delete(new Product(id,null,0,0)) == false) 
 							JOptionPane.showMessageDialog(null, String.format("%s", "The product does not exist in the database" ), "ERROR", JOptionPane.ERROR_MESSAGE, null);
 						else
 						{
