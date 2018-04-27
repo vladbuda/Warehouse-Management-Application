@@ -1,6 +1,6 @@
 package warehousedb.start;
 
-import warhousedb.gui.GUI;
+import warehousedb.gui.GUI;
 
 public class Start
 {

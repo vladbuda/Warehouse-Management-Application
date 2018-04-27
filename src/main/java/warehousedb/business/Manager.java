@@ -12,10 +12,10 @@ import java.util.List;
 import warehousedb.dao.ClientDAO;
 import warehousedb.dao.OrderDAO;
 import warehousedb.dao.ProductDAO;
+import warehousedb.gui.ProductsGUI;
 import warehousedb.model.Client;
 import warehousedb.model.Order;
 import warehousedb.model.Product;
-import warhousedb.gui.ProductsGUI;
 
 /**This class implements the application logic for performing SQL operations on a database
  * @author Vlad-Cristian Buda

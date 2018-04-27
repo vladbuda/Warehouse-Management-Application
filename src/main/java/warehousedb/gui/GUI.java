@@ -1,4 +1,4 @@
-package warhousedb.gui;
+package warehousedb.gui;
 
 /**This class contains the graphical user interfaces for each table in the MYSQL database.
  * @author Vlad-Cristian Buda
